@@ -5,7 +5,7 @@ const userSchema = Schema({
     password: { type: String, require: true },
     role: { type: String, require: true, default: "USER" },
     registrationDate: { type: Date, default: new Date() },
-    email:  { type: String, require: true }
+    email: { type: String, require: true }
 })
 
 export const userModel = model("user", userSchema);

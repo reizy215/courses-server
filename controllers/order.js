@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 import { orderModel } from "../models/order.js";
 
+//פונקציה שמחזירה את כל ההזמנות
 export const getAllOrders = async (req, res) => {
     try {
         let data = await orderModel.find();
@@ -12,6 +13,7 @@ export const getAllOrders = async (req, res) => {
     }
 }
 
+//userId פונקציה שמחזירה את כל ההזמנות לפי
 export const getOrdersByUserId = async (req, res) => {
     let { userId } = req.params;
     try {
@@ -25,6 +27,7 @@ export const getOrdersByUserId = async (req, res) => {
     }
 }
 
+//פונקציה שמוסיפה הזמנה
 export const addOrder = async (req, res) => {
     let { body } = req;
     if (!body.userId || !body.courses || !body.courses.length)
@@ -39,6 +42,8 @@ export const addOrder = async (req, res) => {
     }
 }
 
+//ID פונקציה שמבטלת הזמנה לפי
+//רק אם עדיין לא התקבל התשלום על הקורס
 export const deleteOrderById = async (req, res) => {
     let { id } = req.params;
     if (!mongoose.isValidObjectId(id))
@@ -57,6 +62,9 @@ export const deleteOrderById = async (req, res) => {
     }
 }
 
+//trueפונקציה שמעדכנת את התשלום ל
+//TRUEפרטי התשלום מתקבלים בעת הזמנת הקורס אבל התשלום הופך ל)
+//(רק ב-2 לחודש הבא שאז הכסף מתקבל מהבנק 
 export const updateOrderPayment = async (req, res) => {
     let { id } = req.params;
     if (!mongoose.isValidObjectId(id))

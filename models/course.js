@@ -1,4 +1,4 @@
-import { Schema, model} from "mongoose";
+import { Schema, model } from "mongoose";
 
 const lecturerSchema = Schema({
     fullName: { type: String, require: true },

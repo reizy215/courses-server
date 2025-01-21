@@ -4,9 +4,9 @@ import { getAllOrders, getOrdersByUserId, addOrder, deleteOrderById, updateOrder
 const router = Router();
 
 router.get("", getAllOrders);
-router.get("/:userId",getOrdersByUserId);
-router.post("",addOrder);
-router.delete("/:id",deleteOrderById);
-router.put("/:id",updateOrderPayment);
+router.get("/:userId", getOrdersByUserId);
+router.post("", addOrder);
+router.delete("/:id", deleteOrderById);
+router.put("/:id", updateOrderPayment);
 
 export default router;

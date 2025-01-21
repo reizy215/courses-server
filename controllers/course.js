@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 import { courseModel } from "../models/course.js";
 
-
+//פונקציה שמחזירה את כל הקורסים
 export const getAllCourses = async (req, res) => {
     try {
         let data = await courseModel.find();
@@ -13,6 +13,7 @@ export const getAllCourses = async (req, res) => {
     }
 }
 
+//ID פונקציה שמחזירה קורס לפי
 export const getCourseById = async (req, res) => {
     let { id } = req.params;
     if (!mongoose.isValidObjectId(id))
@@ -28,6 +29,7 @@ export const getCourseById = async (req, res) => {
     }
 }
 
+//ID פונקציה שמוחקת קורס לפי
 export const deleteCourseById = async (req, res) => {
     let { id } = req.params;
     if (!mongoose.isValidObjectId(id))
@@ -43,6 +45,7 @@ export const deleteCourseById = async (req, res) => {
     }
 }
 
+//ID פונקציה שמעדכנת פרטי קורס לפי 
 export const updateCourseById = async (req, res) => {
     let { id } = req.params;
     if (!mongoose.isValidObjectId(id))
@@ -58,6 +61,7 @@ export const updateCourseById = async (req, res) => {
     }
 }
 
+//פונקציה שמוסיפה קורס חדש
 export const addCourse = async (req, res) => {
     let { body } = req;
     if (!body.name || !body.description || !body.startDate || !body.imagePath || !body.price
@@ -71,9 +75,4 @@ export const addCourse = async (req, res) => {
     catch (err) {
         res.status(400).json({ title: "Error, the course cannot be added", message: err.message });
     }
-
 }
-
-
-
-

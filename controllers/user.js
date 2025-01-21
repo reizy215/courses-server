@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 import { userModel } from "../models/user.js"
 
+//פונקצית רישום משתמש חדש
 export const signUp = async (req, res) => {
     let { body } = req;
     if (!body.userName || !body.password || !body.email)
@@ -16,6 +17,7 @@ export const signUp = async (req, res) => {
     }
 }
 
+//פונקציה שמחזירה את כל המשתמשים
 export const getAllUsers = async (req, res) => {
     try {
         let data = await userModel.find().select('-password');
@@ -26,6 +28,7 @@ export const getAllUsers = async (req, res) => {
     }
 }
 
+//ID פונקציה שמחזירה משתמש לפי
 export const getUserById = async (req, res) => {
     let { id } = req.params;
     if (!mongoose.isValidObjectId(id))
@@ -41,6 +44,7 @@ export const getUserById = async (req, res) => {
     }
 }
 
+//פונקציה שמעדכנת פרטי משתמש לא כולל סיסמה
 export const UpdateExceptPassword = async (req, res) => {
     let { id } = req.params;
     if (!mongoose.isValidObjectId(id))
@@ -58,6 +62,7 @@ export const UpdateExceptPassword = async (req, res) => {
     }
 }
 
+//פונקציה שמעדכנת סיסמת משתמש
 export const UpdatePassword = async (req, res) => {
     let { id } = req.params;
     if (!mongoose.isValidObjectId(id))
@@ -75,13 +80,14 @@ export const UpdatePassword = async (req, res) => {
     }
 }
 
+//פונקציה שמחזירה משתמש לפי סיסמה ושם משתמש
 export const logIn = async (req, res) => {
     let { userName, password } = req.body;
     if (!userName || !password)
         return res.status(400).json({ title: "Error, missing details.", message: "Password / userName is missing" });
     try {
-        let data = await userModel.findOne({ userName: userName, password: password });
-        if(!data)
+        let data = await userModel.findOne({ userName: userName, password: password }).select('-password');
+        if (!data)
             return res.status(404).json({ title: "Error, you cant login", message: "There is no user with such details" });
         res.json(data);
     }
