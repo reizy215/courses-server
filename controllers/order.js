@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-import { courseModel } from "../models/course.js";
-import { userModel } from "../models/user.js";
+
 import { orderModel } from "../models/order.js";
 
 export const getAllOrders = async (req, res) => {
@@ -50,7 +49,7 @@ export const deleteOrderById = async (req, res) => {
             return res.status(404).json({ title: "Error", message: "The ID does not exist" });
         if (data.isPaid)
             return res.status(400).json({ title: "Error", message: "It is not possible to cancel an order that has already been paid" });
-            data=await orderModel.findByIdAndDelete(id);
+        data = await orderModel.findByIdAndDelete(id);
         res.json(data);
     }
     catch (err) {
@@ -58,12 +57,12 @@ export const deleteOrderById = async (req, res) => {
     }
 }
 
-export const updateOrderPayment= async (req, res) => {
+export const updateOrderPayment = async (req, res) => {
     let { id } = req.params;
     if (!mongoose.isValidObjectId(id))
         return res.status(400).json({ title: "Error", message: "The id is not valid" });
     try {
-        let data = await orderModel.findByIdAndUpdate(id, {isPaid:true}, { new: true });
+        let data = await orderModel.findByIdAndUpdate(id, { isPaid: true }, { new: true });
         if (!data)
             return res.status(404).json({ title: "Error", message: "The ID does not exist" });
         res.json(data);
