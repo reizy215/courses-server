@@ -64,6 +64,8 @@ export const deleteCourseById = async (req, res) => {
 }
 
 
+
+
 //ID פונקציה שמעדכנת פרטי קורס לפי 
 export const updateCourseById = async (req, res) => {
     let { id } = req.params;
