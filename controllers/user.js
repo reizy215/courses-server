@@ -1,16 +1,34 @@
 import mongoose from "mongoose";
 
 import { userModel } from "../models/user.js"
+import { generateToken } from "../utils/generateToken.js";
 
 //פונקצית רישום משתמש חדש
 export const signUp = async (req, res) => {
     let { body } = req;
     if (!body.userName || !body.password || !body.email)
         return res.status(400).json({ title: "Error, you cant sign up", message: "details are missing" });
+
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    // אם הסיסמה לא תואמת את הפורמט, מחזירים הודעת שגיאה
+    if (!passwordRegex.test(body.password))
+        return res.status(400).json({ title: "Error, password format is incorrect", message: "Password must contain at least 8 characters, letters and numbers." });
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    // אם המייל לא תואם לפורמט, מחזירים הודעת שגיאה
+    if (!emailRegex.test(body.email))
+        return res.status(400).json({ title: "Error, email format is incorrect", message: "Please provide a valid email address." });
+
     try {
+        let data = await userModel.findOne({ userName: body.userName, password: body.password });
+        if (data)
+            return res.status(409).json({ title: "Error, you cant sign up", message: "choose a different userName or password." });
         let newUser = new userModel(body);
-        let data = await newUser.save();
-        res.json(data);
+        data = await newUser.save();
+        let userWithoutPassword = data.toObject();
+        delete userWithoutPassword.password;
+        let token = generateToken(userWithoutPassword);
+        res.json({ ...userWithoutPassword, token })
     }
     catch (err) {
         return res.status(400).json({ title: "Error, you cant sign up", message: err.message });
@@ -19,8 +37,10 @@ export const signUp = async (req, res) => {
 
 //פונקציה שמחזירה את כל המשתמשים
 export const getAllUsers = async (req, res) => {
+    let limit = req.query.limit || 20;
+    let page = req.query.page || 1;
     try {
-        let data = await userModel.find().select('-password');
+        let data = await userModel.find().select('-password').skip((page - 1) * limit).limit(limit);
         res.json(data);
     }
     catch (err) {
@@ -89,7 +109,8 @@ export const logIn = async (req, res) => {
         let data = await userModel.findOne({ userName: userName, password: password }).select('-password');
         if (!data)
             return res.status(404).json({ title: "Error, you cant login", message: "There is no user with such details" });
-        res.json(data);
+        let token = generateToken(data);
+        res.json({ ...data.toObject(), token });
     }
     catch (err) {
         res.status(400).json({ title: "Error, you cant login.", message: err.message });

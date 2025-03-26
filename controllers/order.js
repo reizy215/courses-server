@@ -4,8 +4,10 @@ import { orderModel } from "../models/order.js";
 
 //פונקציה שמחזירה את כל ההזמנות
 export const getAllOrders = async (req, res) => {
+    let limit = req.query.limit || 10;
+    let page = req.query.page || 1;
     try {
-        let data = await orderModel.find();
+        let data = await orderModel.find().skip((page-1)*limit).limit(limit);
         res.json(data);
     }
     catch (err) {
